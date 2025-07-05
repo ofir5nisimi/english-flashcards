@@ -15,19 +15,19 @@
 
 ## Phase 2: Local User Profiles
 
-- [ ] **Create local user profile management (add, switch, delete users)**  
+- [x] **Create local user profile management (add, switch, delete users)**  
   **Acceptance Criteria:**  
   - User can create a profile by entering a username.
   - User can switch between profiles.
   - User can delete a profile.
   - All data persists across page reloads via LocalStorage or IndexedDB.
 
-- [ ] **Add user progress tracking (per profile)**  
+- [x] **Add user progress tracking (per profile)**  
   **Acceptance Criteria:**  
   - Progress is tracked separately for each user.
   - Switching users updates the app to show the correct progress.
 
-- [ ] **Add option to reset user progress**  
+- [x] **Add option to reset user progress**  
   **Acceptance Criteria:**  
   - User can reset their progress for any profile.
   - Reset clears completed levels and quiz results for that profile.

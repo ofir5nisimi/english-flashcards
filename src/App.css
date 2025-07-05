@@ -158,7 +158,127 @@ body {
   border-top: 1px solid #eee;
 }
 
-/* Responsive design */
+/* User Status Bar */
+.user-status-bar {
+  background: #f8f9fa;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-top: 16px;
+  border: 1px solid #e9ecef;
+}
+
+.current-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.user-greeting {
+  color: #333;
+  font-size: 16px;
+}
+
+.user-greeting strong {
+  color: #4CAF50;
+}
+
+.user-progress {
+  color: #666;
+  font-size: 14px;
+  background: #e8f5e8;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.manage-profiles-button,
+.select-user-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.manage-profiles-button:hover,
+.select-user-button:hover {
+  background: #45a049;
+}
+
+.no-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #666;
+}
+
+/* Feature Status Indicators */
+.feature-status {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.status-active {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.status-inactive {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.status-coming-soon {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+/* Debug Actions */
+.debug-actions {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.debug-actions h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 16px;
+}
+
+.debug-button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.debug-button:hover {
+  background: #d32f2f;
+}
+
+.debug-info {
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
+}
+
+.debug-info p {
+  margin: 4px 0;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .app-header h1 {
     font-size: 2rem;
@@ -190,6 +310,29 @@ body {
   .secondary-button {
     width: 100%;
     max-width: 300px;
+  }
+  
+  .user-status-bar {
+    padding: 12px 16px;
+  }
+  
+  .current-user-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .user-greeting {
+    font-size: 14px;
+  }
+  
+  .user-progress {
+    font-size: 12px;
+  }
+  
+  .debug-actions {
+    margin-top: 24px;
+    padding: 16px;
   }
 }
 
