@@ -114,3 +114,5 @@
 - [ ] **Performance optimizations**  
   **Acceptance Criteria:**  
   - App loads quickly and transitions are smooth on all devices.
+
+
