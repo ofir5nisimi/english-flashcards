@@ -42,7 +42,7 @@ describe('localStorage utilities', () => {
             id: '2', 
             username: 'Bob', 
             progress: { completedLevels: [], currentLevel: 1 },
-            quizResults: {}
+            quizResults: {} as { [levelId: number]: { score: number; passed: boolean; attempts: number } }
           }
         ];
 
@@ -56,8 +56,18 @@ describe('localStorage utilities', () => {
 
       it('should load users from localStorage', () => {
         const users = [
-          { id: '1', username: 'Alice', createdAt: '2023-01-01' },
-          { id: '2', username: 'Bob', createdAt: '2023-01-02' }
+          { 
+            id: '1', 
+            username: 'Alice', 
+            progress: { completedLevels: [1], currentLevel: 2 },
+            quizResults: { 1: { score: 90, passed: true, attempts: 1 } }
+          },
+          { 
+            id: '2', 
+            username: 'Bob', 
+            progress: { completedLevels: [], currentLevel: 1 },
+            quizResults: {} as { [levelId: number]: { score: number; passed: boolean; attempts: number } }
+          }
         ];
         mockLocalStorage.getItem.mockReturnValue(JSON.stringify(users));
 
@@ -86,7 +96,12 @@ describe('localStorage utilities', () => {
 
     describe('saveCurrentUser and loadCurrentUser', () => {
       it('should save current user correctly', () => {
-        const user = { id: '1', username: 'Alice', createdAt: '2023-01-01' };
+        const user = { 
+          id: '1', 
+          username: 'Alice', 
+          progress: { completedLevels: [1], currentLevel: 2 },
+          quizResults: { 1: { score: 90, passed: true, attempts: 1 } }
+        };
 
         saveCurrentUser(user);
 
@@ -103,7 +118,12 @@ describe('localStorage utilities', () => {
       });
 
       it('should load current user from localStorage', () => {
-        const user = { id: '1', username: 'Alice', createdAt: '2023-01-01' };
+        const user = { 
+          id: '1', 
+          username: 'Alice', 
+          progress: { completedLevels: [1], currentLevel: 2 },
+          quizResults: { 1: { score: 90, passed: true, attempts: 1 } }
+        };
         mockLocalStorage.getItem.mockReturnValue(JSON.stringify(user));
 
         const result = loadCurrentUser();

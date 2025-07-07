@@ -15,7 +15,7 @@ interface ExportImportProps {
 }
 
 const ExportImport: React.FC<ExportImportProps> = ({ onClose }) => {
-  const { state, dispatch } = useAppContext();
+  const { state } = useAppContext();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ success: boolean; message: string } | null>(null);
