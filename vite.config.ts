@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   
+  // Base path for GitHub Pages deployment
+  base: '/english-flashcards/',
+  
   // Build optimizations
   build: {
     // Enable source maps for production debugging (can be disabled for smaller builds)
