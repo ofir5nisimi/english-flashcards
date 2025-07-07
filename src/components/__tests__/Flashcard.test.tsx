@@ -30,6 +30,7 @@ const mockProps = {
   level: 1,
   onBack: jest.fn(),
   onClose: jest.fn(),
+  onQuizSelect: jest.fn(),
 };
 
 const renderWithProvider = (component: React.ReactElement) => {

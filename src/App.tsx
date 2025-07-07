@@ -131,9 +131,7 @@ function App() {
     }
   }
 
-  const handleCloseQuizMode = () => {
-    setShowQuizMode(false)
-  }
+
 
   const handleBackToLevelsFromQuiz = () => {
     setShowQuizMode(false)

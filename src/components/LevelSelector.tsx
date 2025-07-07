@@ -65,10 +65,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onQuizSele
     return totalWords >= 4 && isLevelUnlocked(level);
   };
 
-  // Get maximum unlocked level
-  const maxUnlockedLevel = availableLevels.reduce((max, level) => {
-    return isLevelUnlocked(level) ? Math.max(max, level) : max;
-  }, 1);
+
 
   const handleLevelClick = (level: number) => {
     if (isLevelUnlocked(level)) {
