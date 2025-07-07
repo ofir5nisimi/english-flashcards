@@ -66,12 +66,24 @@ export const defaultWords: Word[] = [
   { id: 'default-52', emoji: '🐴', english: 'Horse', hebrew: 'סוס', level: 6 },
   { id: 'default-53', emoji: '🐄', english: 'Cow', hebrew: 'פרה', level: 6 },
   { id: 'default-54', emoji: '🐷', english: 'Pig', hebrew: 'חזיר', level: 6 },
-  { id: 'default-55', emoji: '🐑', english: 'Sheep', hebrew: 'כבש', level: 6 },
+  { id: 'default-55', emoji: '🐑', english: 'Sheep', hebrew: 'כבשה', level: 6 },
   { id: 'default-56', emoji: '🦆', english: 'Duck', hebrew: 'ברווז', level: 6 },
   { id: 'default-57', emoji: '🐔', english: 'Chicken', hebrew: 'תרנגולת', level: 6 },
   { id: 'default-58', emoji: '🐘', english: 'Elephant', hebrew: 'פיל', level: 6 },
   { id: 'default-59', emoji: '🦁', english: 'Lion', hebrew: 'אריה', level: 6 },
-  { id: 'default-60', emoji: '🐵', english: 'Monkey', hebrew: 'קוף', level: 6 }
+  { id: 'default-60', emoji: '🐵', english: 'Monkey', hebrew: 'קוף', level: 6 },
+
+  // Level 7 - Fruits (10 words)
+  { id: 'default-61', emoji: '🍊', english: 'Orange', hebrew: 'תפוז', level: 7 },
+  { id: 'default-62', emoji: '🍇', english: 'Grapes', hebrew: 'ענבים', level: 7 },
+  { id: 'default-63', emoji: '🍉', english: 'Watermelon', hebrew: 'אבטיח', level: 7 },
+  { id: 'default-64', emoji: '🍓', english: 'Strawberry', hebrew: 'תותים', level: 7 },
+  { id: 'default-65', emoji: '🍍', english: 'Pineapple', hebrew: 'אננס', level: 7 },
+  { id: 'default-66', emoji: '🍑', english: 'Peach', hebrew: 'אפרסק', level: 7 },
+  { id: 'default-67', emoji: '🍒', english: 'Cherry', hebrew: 'דובדבן', level: 7 },
+  { id: 'default-68', emoji: '🍐', english: 'Pear', hebrew: 'אגס', level: 7 },
+  { id: 'default-69', emoji: '🍋', english: 'Lemon', hebrew: 'לימון', level: 7 },
+  { id: 'default-70', emoji: '🥭', english: 'Mango', hebrew: 'מנגו', level: 7 }
 ];
 
 export const loadDefaultWords = (): Word[] => {
