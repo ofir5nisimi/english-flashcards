@@ -36,17 +36,17 @@
 
 ## Phase 3: Flashcard System
 
-- [ ] **Display a single flashcard with emoji and Hebrew translation**  
+- [x] **Display a single flashcard with emoji and Hebrew translation**  
   **Acceptance Criteria:**  
   - Flashcard shows emoji and Hebrew under it.
   - Only one card visible at a time.
 
-- [ ] **Implement card flip on click/tap**  
+- [x] **Implement card flip on click/tap**  
   **Acceptance Criteria:**  
   - Card flips smoothly on click/tap.
   - After flipping, English word is shown.
 
-- [ ] **Integrate browser Text-to-Speech for English word**  
+- [x] **Integrate browser Text-to-Speech for English word**  
   **Acceptance Criteria:**  
   - On flip, English word is pronounced automatically.
   - Button allows replaying pronunciation.

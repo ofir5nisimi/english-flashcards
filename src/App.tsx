@@ -1,19 +1,20 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useAppContext } from './context/AppContext'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import UserProfileManager from './components/UserProfileManager'
+import Flashcard from './components/Flashcard'
 import './App.css'
 
 function App() {
   const { state } = useAppContext()
   const { clearAllData } = useLocalStorage()
   const [showProfileManager, setShowProfileManager] = useState(false)
+  const [showLearningMode, setShowLearningMode] = useState(false)
 
   const handleGetStarted = () => {
     if (state.currentUser) {
-      // User is already logged in, show main app functionality
-      console.log('Starting main app for user:', state.currentUser.username)
-      // TODO: Navigate to main app view
+      // User is already logged in, show flashcard learning
+      setShowLearningMode(true)
     } else {
       // No user selected, show profile manager
       setShowProfileManager(true)
@@ -28,6 +29,10 @@ function App() {
     setShowProfileManager(false)
   }
 
+  const handleCloseLearningMode = () => {
+    setShowLearningMode(false)
+  }
+
   if (showProfileManager) {
     return (
       <div className="app">
@@ -38,6 +43,31 @@ function App() {
         
         <main className="app-main">
           <UserProfileManager onClose={handleCloseProfileManager} />
+        </main>
+        
+        <footer className="app-footer">
+          <p>© 2024 English Flashcards - Learn English with Fun!</p>
+        </footer>
+      </div>
+    )
+  }
+
+  if (showLearningMode) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>English Flashcards</h1>
+          <p>Learning Session - {state.currentUser?.username}</p>
+          <button 
+            className="back-button"
+            onClick={handleCloseLearningMode}
+          >
+            ← Back to Dashboard
+          </button>
+        </header>
+        
+        <main className="app-main">
+          <Flashcard emoji="🍎" hebrew="תפוח" english="Apple" />
         </main>
         
         <footer className="app-footer">
@@ -112,7 +142,11 @@ function App() {
               <h3>Interactive Cards</h3>
               <p>Flip cards to reveal English words with pronunciation</p>
               <div className="feature-status">
-                <span className="status-coming-soon">🚧 Coming Soon</span>
+                {state.currentUser ? (
+                  <span className="status-active">✅ Ready to learn</span>
+                ) : (
+                  <span className="status-inactive">❌ Select a user first</span>
+                )}
               </div>
             </div>
             
