@@ -7,9 +7,10 @@ interface FlashcardProps {
   level: number
   onBack: () => void
   onClose: () => void
+  onQuizSelect: (level: number) => void
 }
 
-const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose }) => {
+const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSelect }) => {
   const { state } = useAppContext()
   const [isFlipped, setIsFlipped] = useState(false)
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false)
@@ -254,6 +255,28 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose }) => {
         >
           Next →
         </button>
+      </div>
+
+      {/* Quiz Access Section */}
+      <div className="quiz-access">
+        {levelWords.length >= 4 ? (
+          <div className="quiz-section">
+            <h3>Ready for a Quiz?</h3>
+            <p>Test your knowledge of Level {level} words with a multiple-choice quiz!</p>
+            <button 
+              className="quiz-access-button"
+              onClick={() => onQuizSelect(level)}
+              aria-label={`Take quiz for Level ${level}`}
+            >
+              🧠 Take Level {level} Quiz
+            </button>
+          </div>
+        ) : (
+          <div className="quiz-unavailable">
+            <p>Quiz will be available when this level has at least 4 words.</p>
+            <p>Current words: {levelWords.length}/4</p>
+          </div>
+        )}
       </div>
     </div>
   )

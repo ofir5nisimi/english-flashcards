@@ -4,10 +4,11 @@ import './LevelSelector.css';
 
 interface LevelSelectorProps {
   onLevelSelect: (level: number) => void;
+  onQuizSelect: (level: number) => void;
   onClose: () => void;
 }
 
-const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose }) => {
+const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onQuizSelect, onClose }) => {
   const { state } = useAppContext();
 
   // Group words by level
@@ -53,6 +54,17 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
     return state.currentUser?.progress.completedLevels.includes(level) || false;
   };
 
+  // Get quiz result for a level
+  const getQuizResult = (level: number) => {
+    return state.currentUser?.quizResults[level] || null;
+  };
+
+  // Check if level has enough words for a quiz (at least 4 words needed for multiple choice)
+  const canTakeQuiz = (level: number) => {
+    const totalWords = state.words.filter(word => word.level <= level).length;
+    return totalWords >= 4 && isLevelUnlocked(level);
+  };
+
   // Get maximum unlocked level
   const maxUnlockedLevel = availableLevels.reduce((max, level) => {
     return isLevelUnlocked(level) ? Math.max(max, level) : max;
@@ -61,6 +73,13 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
   const handleLevelClick = (level: number) => {
     if (isLevelUnlocked(level)) {
       onLevelSelect(level);
+    }
+  };
+
+  const handleQuizClick = (level: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent triggering level click
+    if (canTakeQuiz(level)) {
+      onQuizSelect(level);
     }
   };
 
@@ -79,7 +98,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
 
       <div className="selector-description">
         <p>Each level contains new words plus all words from previous levels.</p>
-        <p>Complete Level {maxUnlockedLevel} to unlock Level {maxUnlockedLevel + 1}!</p>
+        <p>Study flashcards and take quizzes to unlock new levels!</p>
       </div>
 
       {availableLevels.length === 0 ? (
@@ -93,26 +112,20 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
             const levelInfo = getLevelInfo(level);
             const unlocked = isLevelUnlocked(level);
             const completed = isLevelCompleted(level);
+            const quizResult = getQuizResult(level);
+            const canQuiz = canTakeQuiz(level);
             
             return (
               <div
                 key={level}
                 className={`level-card ${unlocked ? 'unlocked' : 'locked'} ${completed ? 'completed' : ''}`}
-                onClick={() => handleLevelClick(level)}
-                tabIndex={unlocked ? 0 : -1}
-                role="button"
-                aria-label={`Level ${level} - ${levelInfo.totalWords} words total`}
-                onKeyDown={(e) => {
-                  if ((e.key === 'Enter' || e.key === ' ') && unlocked) {
-                    e.preventDefault();
-                    handleLevelClick(level);
-                  }
-                }}
               >
                 <div className="level-header">
                   <h3>Level {level}</h3>
-                  {completed && <span className="completed-badge">✓</span>}
-                  {!unlocked && <span className="locked-badge">🔒</span>}
+                  <div className="level-badges">
+                    {completed && <span className="completed-badge">✓</span>}
+                    {!unlocked && <span className="locked-badge">🔒</span>}
+                  </div>
                 </div>
 
                 <div className="level-stats">
@@ -126,6 +139,17 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
                   </div>
                 </div>
 
+                {quizResult && (
+                  <div className={`quiz-status ${quizResult.passed ? 'passed' : 'failed'}`}>
+                    <div className="quiz-score">
+                      Quiz: {quizResult.score}% {quizResult.passed ? '✓' : '✗'}
+                    </div>
+                    <div className="quiz-attempts">
+                      Attempts: {quizResult.attempts}
+                    </div>
+                  </div>
+                )}
+
                 {!unlocked && (
                   <div className="unlock-requirement">
                     Complete previous levels to unlock
@@ -133,8 +157,30 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
                 )}
 
                 {unlocked && (
-                  <div className="level-action">
-                    {completed ? 'Study Again' : 'Start Level'}
+                  <div className="level-actions">
+                    <button
+                      className="level-action-button study-button"
+                      onClick={() => handleLevelClick(level)}
+                      aria-label={`Study Level ${level}`}
+                    >
+                      📚 {completed ? 'Study Again' : 'Study'}
+                    </button>
+                    
+                    {canQuiz && (
+                      <button
+                        className={`level-action-button quiz-button ${quizResult?.passed ? 'quiz-passed' : ''}`}
+                        onClick={(e) => handleQuizClick(level, e)}
+                        aria-label={`Take Quiz for Level ${level}`}
+                      >
+                        🧠 {quizResult ? 'Retake Quiz' : 'Take Quiz'}
+                      </button>
+                    )}
+                    
+                    {!canQuiz && levelInfo.totalWords < 4 && (
+                      <div className="quiz-disabled">
+                        Need 4+ words for quiz
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -147,6 +193,10 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onClose })
         <div className="progress-summary">
           <span>Completed Levels: {state.currentUser?.progress.completedLevels.length || 0}</span>
           <span>Current Level: {state.currentUser?.progress.currentLevel || 1}</span>
+          <span>Total Quizzes Passed: {
+            Object.values(state.currentUser?.quizResults || {})
+              .filter(result => result.passed).length
+          }</span>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import UserProfileManager from './components/UserProfileManager'
 import WordListManager from './components/WordListManager'
 import LevelSelector from './components/LevelSelector'
 import Flashcard from './components/Flashcard'
+import Quiz from './components/Quiz'
 import './App.css'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [showWordManager, setShowWordManager] = useState(false)
   const [showLevelSelector, setShowLevelSelector] = useState(false)
   const [showLearningMode, setShowLearningMode] = useState(false)
+  const [showQuizMode, setShowQuizMode] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
 
   // Load default words if no words exist
@@ -89,6 +91,35 @@ function App() {
     setShowLevelSelector(true)
   }
 
+  const handleQuizSelect = (level: number) => {
+    setSelectedLevel(level)
+    setShowLevelSelector(false)
+    setShowQuizMode(true)
+  }
+
+  const handleQuizComplete = (score: number, passed: boolean) => {
+    if (state.currentUser) {
+      dispatch({
+        type: 'UPDATE_QUIZ_RESULT',
+        payload: {
+          userId: state.currentUser.id,
+          level: selectedLevel,
+          score,
+          passed
+        }
+      })
+    }
+  }
+
+  const handleCloseQuizMode = () => {
+    setShowQuizMode(false)
+  }
+
+  const handleBackToLevelsFromQuiz = () => {
+    setShowQuizMode(false)
+    setShowLevelSelector(true)
+  }
+
   // Show profile manager
   if (showProfileManager) {
     return (
@@ -139,7 +170,35 @@ function App() {
         </header>
         
         <main className="app-main">
-          <LevelSelector onLevelSelect={handleLevelSelect} onClose={handleCloseLevelSelector} />
+          <LevelSelector 
+            onLevelSelect={handleLevelSelect} 
+            onQuizSelect={handleQuizSelect}
+            onClose={handleCloseLevelSelector} 
+          />
+        </main>
+        
+        <footer className="app-footer">
+          <p>© 2024 English Flashcards - Learn English with Fun!</p>
+        </footer>
+      </div>
+    )
+  }
+
+  // Show quiz mode
+  if (showQuizMode) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>English Flashcards</h1>
+          <p>Level {selectedLevel} - Quiz Mode</p>
+        </header>
+        
+        <main className="app-main">
+          <Quiz 
+            level={selectedLevel} 
+            onComplete={handleQuizComplete}
+            onBack={handleBackToLevelsFromQuiz}
+          />
         </main>
         
         <footer className="app-footer">
@@ -162,7 +221,8 @@ function App() {
           <Flashcard 
             level={selectedLevel} 
             onBack={handleBackToLevels}
-            onClose={handleCloseLearningMode} 
+            onClose={handleCloseLearningMode}
+            onQuizSelect={handleQuizSelect}
           />
         </main>
         

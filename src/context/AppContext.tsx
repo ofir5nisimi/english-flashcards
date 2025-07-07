@@ -39,6 +39,7 @@ export type AppAction =
   | { type: 'ADD_USER'; payload: User }
   | { type: 'DELETE_USER'; payload: string }
   | { type: 'UPDATE_USER_PROGRESS'; payload: { userId: string; progress: User['progress'] } }
+  | { type: 'UPDATE_QUIZ_RESULT'; payload: { userId: string; level: number; score: number; passed: boolean } }
   | { type: 'SET_WORDS'; payload: Word[] }
   | { type: 'ADD_WORD'; payload: Word }
   | { type: 'UPDATE_WORD'; payload: Word }
@@ -84,6 +85,67 @@ function appReducer(state: AppState, action: AppAction): AppState {
         currentUser: state.currentUser?.id === action.payload.userId
           ? { ...state.currentUser, progress: action.payload.progress }
           : state.currentUser,
+      };
+    
+    case 'UPDATE_QUIZ_RESULT':
+      return {
+        ...state,
+        users: state.users.map(user => {
+          if (user.id === action.payload.userId) {
+            const updatedQuizResults = {
+              ...user.quizResults,
+              [action.payload.level]: {
+                score: action.payload.score,
+                passed: action.payload.passed,
+                attempts: (user.quizResults[action.payload.level]?.attempts || 0) + 1
+              }
+            };
+            
+            // If quiz passed, add level to completed levels and update current level
+            const updatedProgress = action.payload.passed ? {
+              ...user.progress,
+              completedLevels: user.progress.completedLevels.includes(action.payload.level) 
+                ? user.progress.completedLevels
+                : [...user.progress.completedLevels, action.payload.level].sort((a, b) => a - b),
+              currentLevel: Math.max(user.progress.currentLevel, action.payload.level + 1)
+            } : user.progress;
+            
+            return {
+              ...user,
+              quizResults: updatedQuizResults,
+              progress: updatedProgress
+            };
+          }
+          return user;
+        }),
+        currentUser: state.currentUser?.id === action.payload.userId ? (() => {
+          const user = state.users.find(u => u.id === action.payload.userId);
+          if (!user) return state.currentUser;
+          
+          const updatedQuizResults = {
+            ...user.quizResults,
+            [action.payload.level]: {
+              score: action.payload.score,
+              passed: action.payload.passed,
+              attempts: (user.quizResults[action.payload.level]?.attempts || 0) + 1
+            }
+          };
+          
+          // If quiz passed, add level to completed levels and update current level
+          const updatedProgress = action.payload.passed ? {
+            ...user.progress,
+            completedLevels: user.progress.completedLevels.includes(action.payload.level) 
+              ? user.progress.completedLevels
+              : [...user.progress.completedLevels, action.payload.level].sort((a, b) => a - b),
+            currentLevel: Math.max(user.progress.currentLevel, action.payload.level + 1)
+          } : user.progress;
+          
+          return {
+            ...state.currentUser,
+            quizResults: updatedQuizResults,
+            progress: updatedProgress
+          };
+        })() : state.currentUser,
       };
     
     case 'SET_WORDS':

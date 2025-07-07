@@ -71,18 +71,18 @@
 
 ## Phase 5: Quizzes & Progression
 
-- [ ] **Create multiple-choice quiz for each level**  
+- [x] **Create multiple-choice quiz for each level**  
   **Acceptance Criteria:**  
   - Each quiz question shows emoji + Hebrew.
   - Four English word options are presented; only one is correct.
   - Quiz covers all words in the selected level.
 
-- [ ] **Show quiz results and allow retry if failed**  
+- [x] **Show quiz results and allow retry if failed**  
   **Acceptance Criteria:**  
   - Quiz summary is displayed after completion.
   - User can retake the quiz if not passed.
 
-- [ ] **Track and display completion status per level**  
+- [x] **Track and display completion status per level**  
   **Acceptance Criteria:**  
   - Completed levels are clearly indicated in the UI.
   - Users can revisit and retake any level or quiz.
