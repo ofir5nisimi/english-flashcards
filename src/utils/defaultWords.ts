@@ -83,7 +83,19 @@ export const defaultWords: Word[] = [
   { id: 'default-67', emoji: '🍒', english: 'Cherry', hebrew: 'דובדבן', level: 7 },
   { id: 'default-68', emoji: '🍐', english: 'Pear', hebrew: 'אגס', level: 7 },
   { id: 'default-69', emoji: '🍋', english: 'Lemon', hebrew: 'לימון', level: 7 },
-  { id: 'default-70', emoji: '🥭', english: 'Mango', hebrew: 'מנגו', level: 7 }
+  { id: 'default-70', emoji: '🥭', english: 'Mango', hebrew: 'מנגו', level: 7 },
+
+  // Level 8 - Vegetables (10 words)
+  { id: 'default-71', emoji: '🥬', english: 'Lettuce', hebrew: 'חסה', level: 8 },
+  { id: 'default-72', emoji: '🥒', english: 'Cucumber', hebrew: 'מלפפון', level: 8 },
+  { id: 'default-73', emoji: '🥔', english: 'Potato', hebrew: 'תפוח אדמה', level: 8 },
+  { id: 'default-74', emoji: '🧅', english: 'Onion', hebrew: 'בצל', level: 8 },
+  { id: 'default-75', emoji: '🥦', english: 'Broccoli', hebrew: 'ברוקולי', level: 8 },
+  { id: 'default-76', emoji: '🌶️', english: 'Pepper', hebrew: 'פלפל', level: 8 },
+  { id: 'default-77', emoji: '🌽', english: 'Corn', hebrew: 'תירס', level: 8 },
+  { id: 'default-78', emoji: '🍆', english: 'Eggplant', hebrew: 'חציל', level: 8 },
+  { id: 'default-79', emoji: '🥑', english: 'Avocado', hebrew: 'אבוקדו', level: 8 },
+  { id: 'default-80', emoji: '🧄', english: 'Garlic', hebrew: 'שום', level: 8 }
 ];
 
 export const loadDefaultWords = (): Word[] => {
