@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useAppContext, Word } from '../context/AppContext'
 import { shuffleArray } from '../utils/arrayUtils'
+import { useScreenReader } from '../hooks/useScreenReader'
 import './Flashcard.css'
 
 interface FlashcardProps {
@@ -12,6 +13,7 @@ interface FlashcardProps {
 
 const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSelect }) => {
   const { state } = useAppContext()
+  const { announce, cleanup } = useScreenReader()
   const [isFlipped, setIsFlipped] = useState(false)
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false)
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
@@ -19,6 +21,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
   const [speechReady, setSpeechReady] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const speechInitialized = useRef(false)
+  
+  // Focus management refs
+  const flashcardRef = useRef<HTMLDivElement>(null)
+  const backButtonRef = useRef<HTMLButtonElement>(null)
 
   // Initialize speech synthesis and load voices
   useEffect(() => {
@@ -54,11 +60,38 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
     setHasPlayedAudio(false)
   }, [level, state.words])
 
+  // Focus management when component mounts
+  useEffect(() => {
+    if (backButtonRef.current) {
+      backButtonRef.current.focus()
+    }
+    
+    // Announce initial state
+    announce(`Starting flashcard study for Level ${level}. Use arrow keys to navigate between cards, Enter or Space to flip cards.`)
+    
+    // Cleanup screen reader on unmount
+    return () => {
+      cleanup()
+    }
+  }, [level, announce, cleanup])
+
+  // Focus management when word changes
+  useEffect(() => {
+    if (flashcardRef.current && !isTransitioning && currentWordIndex > 0) {
+      // Announce the new word to screen readers
+      const currentWord = levelWords[currentWordIndex]
+      if (currentWord) {
+        announce(`Card ${currentWordIndex + 1} of ${levelWords.length}. Emoji: ${currentWord.emoji}, Hebrew: ${currentWord.hebrew}`)
+      }
+    }
+  }, [currentWordIndex, isTransitioning, levelWords, announce])
+
   const currentWord = levelWords[currentWordIndex]
 
   const handleCardClick = () => {
     if (!isFlipped) {
       setIsFlipped(true)
+      announce(`Card flipped. English word: ${currentWord.english}`)
       if (!hasPlayedAudio) {
         // Play audio after flip animation with retry logic
         setTimeout(() => {
@@ -69,6 +102,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
     } else {
       setIsFlipped(false)
       setHasPlayedAudio(false)
+      announce(`Card flipped back. Showing emoji: ${currentWord.emoji} and Hebrew: ${currentWord.hebrew}`)
     }
   }
 
@@ -165,85 +199,115 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
     }
   }
 
+  // Add keyboard navigation support
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault()
+        nextWord()
+        break
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault()
+        previousWord()
+        break
+      case 'r':
+      case 'R':
+        if (isFlipped && speechReady) {
+          e.preventDefault()
+          speakWordWithRetry()
+        }
+        break
+      case 'Escape':
+        e.preventDefault()
+        onClose()
+        break
+    }
+  }
+
   if (!currentWord) {
     return (
-      <div className="flashcard-container">
-        <div className="no-words-message">
+      <main className="flashcard-container" onKeyDown={handleKeyDown}>
+        <section className="no-words-message">
           <h2>No words available for Level {level}</h2>
           <p>Add some words to this level to start learning!</p>
-          <button className="back-button" onClick={onBack}>
+          <button className="back-button" onClick={onBack} ref={backButtonRef}>
             ← Back to Levels
           </button>
-        </div>
-      </div>
+        </section>
+      </main>
     )
   }
 
   return (
-    <div className="flashcard-container">
-      <div className="flashcard-header">
-        <button className="back-button" onClick={onBack}>
+    <main className="flashcard-container" onKeyDown={handleKeyDown}>
+      <header className="flashcard-header">
+        <button className="back-button" onClick={onBack} aria-label="Go back to level selector" ref={backButtonRef}>
           ← Back to Levels
         </button>
-        <div className="progress-info">
+        <div className="progress-info" role="status" aria-label={`Currently studying Level ${level}, viewing word ${currentWordIndex + 1} of ${levelWords.length}`}>
           <span>Level {level}</span>
           <span>{currentWordIndex + 1} / {levelWords.length}</span>
         </div>
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={onClose} aria-label="Close flashcard study mode">
           ✕
         </button>
-      </div>
+      </header>
 
-      <div 
-        className={`flashcard ${isFlipped ? 'flipped' : ''} ${isTransitioning ? 'transitioning' : ''}`}
-        onClick={handleCardClick}
-        tabIndex={0}
-        role="button"
-        aria-label={isFlipped ? `English word: ${currentWord.english}` : `Emoji: ${currentWord.emoji}, Hebrew: ${currentWord.hebrew}. Click to reveal English word.`}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            handleCardClick()
-          }
-        }}
-      >
-        <div className="flashcard-inner">
-          <div className="flashcard-front">
-            <div className="flashcard-emoji">{currentWord.emoji}</div>
-            <div className="flashcard-hebrew">{currentWord.hebrew}</div>
-                         <div className="flashcard-hint">לחץ כדי לגלות את המילה באנגלית</div>
-          </div>
-          
-          <div className="flashcard-back">
-            <div className="flashcard-emoji">{currentWord.emoji}</div>
-            <div className="flashcard-english">{currentWord.english}</div>
-            <div className="audio-controls">
-              <button 
-                className="replay-button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  speakWordWithRetry()
-                }}
-                aria-label="Replay pronunciation"
-              >
-                🔊 Play Again
-              </button>
+      <section className="flashcard-study-area">
+        <div 
+          className={`flashcard ${isFlipped ? 'flipped' : ''} ${isTransitioning ? 'transitioning' : ''}`}
+          onClick={handleCardClick}
+          tabIndex={0}
+          role="button"
+          aria-label={isFlipped ? `English word: ${currentWord.english}` : `Emoji: ${currentWord.emoji}, Hebrew: ${currentWord.hebrew}. Click to reveal English word.`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleCardClick()
+            }
+          }}
+          ref={flashcardRef}
+        >
+          <div className="flashcard-inner">
+            <div className="flashcard-front">
+              <div className="flashcard-emoji" role="img" aria-label={`Emoji: ${currentWord.emoji}`}>{currentWord.emoji}</div>
+              <div className="flashcard-hebrew" lang="he">{currentWord.hebrew}</div>
+              <div className="flashcard-hint" lang="he">לחץ כדי לגלות את המילה באנגלית</div>
+            </div>
+            
+            <div className="flashcard-back">
+              <div className="flashcard-emoji" role="img" aria-label={`Emoji: ${currentWord.emoji}`}>{currentWord.emoji}</div>
+              <div className="flashcard-english" lang="en">{currentWord.english}</div>
+              <div className="audio-controls">
+                <button 
+                  className="replay-button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    speakWordWithRetry()
+                  }}
+                  aria-label={`Replay pronunciation of ${currentWord.english}`}
+                >
+                  🔊 Play Again
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="navigation-controls">
+      <nav className="navigation-controls" aria-label="Flashcard navigation">
         <button 
           className="nav-button"
           onClick={previousWord}
           disabled={currentWordIndex === 0 || isTransitioning}
-          aria-label="Previous word"
+          aria-label="Go to previous word"
         >
           ← Previous
         </button>
         
-        <div className="word-counter">
+        <div className="word-counter" role="status" aria-live="polite">
           {currentWordIndex + 1} of {levelWords.length}
         </div>
         
@@ -251,17 +315,17 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
           className="nav-button"
           onClick={nextWord}
           disabled={currentWordIndex === levelWords.length - 1 || isTransitioning}
-          aria-label="Next word"
+          aria-label="Go to next word"
         >
           Next →
         </button>
-      </div>
+      </nav>
 
       {/* Quiz Access Section */}
-      <div className="quiz-access">
+      <section className="quiz-access" aria-labelledby="quiz-section-heading">
         {levelWords.length >= 4 ? (
           <div className="quiz-section">
-            <h3>Ready for a Quiz?</h3>
+            <h3 id="quiz-section-heading">Ready for a Quiz?</h3>
             <p>Test your knowledge of Level {level} words with a multiple-choice quiz!</p>
             <button 
               className="quiz-access-button"
@@ -273,12 +337,13 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
           </div>
         ) : (
           <div className="quiz-unavailable">
+            <h3 id="quiz-section-heading">Quiz Not Available</h3>
             <p>Quiz will be available when this level has at least 4 words.</p>
             <p>Current words: {levelWords.length}/4</p>
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext, User } from '../context/AppContext';
 import { generateUserId } from '../utils/localStorage';
 import './UserProfileManager.css';
@@ -12,6 +12,62 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
   const [newUsername, setNewUsername] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
+  
+  // Focus management refs
+  const containerRef = useRef<HTMLElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
+  const usernameInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus management effect
+  useEffect(() => {
+    // Focus the first focusable element when component mounts
+    if (firstFocusableRef.current) {
+      firstFocusableRef.current.focus();
+    }
+
+    // Trap focus within the component
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const focusableElements = container.querySelectorAll(
+          'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          // Shift + Tab
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // Focus username input when creating mode is activated
+  useEffect(() => {
+    if (isCreating && usernameInputRef.current) {
+      usernameInputRef.current.focus();
+    }
+  }, [isCreating]);
 
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,11 +130,12 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="user-profile-manager">
-      <div className="profile-manager-header">
+    <main className="user-profile-manager" ref={containerRef}>
+      <header className="profile-manager-header">
         <h2>👤 User Profiles</h2>
         {onClose && (
           <button 
+            ref={firstFocusableRef}
             className="close-button" 
             onClick={onClose}
             aria-label="Close profile manager"
@@ -86,24 +143,25 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
             ✕
           </button>
         )}
-      </div>
+      </header>
 
       {/* Current User Display */}
       {state.currentUser && (
-        <div className="current-user-section">
-          <h3>Current User</h3>
-          <div className="current-user-card">
+        <section className="current-user-section" aria-labelledby="current-user-heading">
+          <h3 id="current-user-heading">Current User</h3>
+          <div className="current-user-card" role="group" aria-labelledby="current-user-heading">
             <div className="user-info">
-              <span className="user-emoji">👤</span>
+              <span className="user-emoji" role="img" aria-label="User icon">👤</span>
               <div>
                 <strong>{state.currentUser.username}</strong>
                 <p>Level {state.currentUser.progress.currentLevel} • {state.currentUser.progress.completedLevels.length} levels completed</p>
               </div>
             </div>
-            <div className="user-actions">
+            <div className="user-actions" role="group" aria-label={`Actions for ${state.currentUser.username}`}>
               <button 
                 className="reset-button"
                 onClick={() => handleResetProgress(state.currentUser!.id)}
+                aria-label={`Reset progress for ${state.currentUser.username}`}
                 title="Reset progress"
               >
                 🔄
@@ -111,42 +169,57 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
               <button 
                 className="delete-button"
                 onClick={() => handleDeleteUser(state.currentUser!.id)}
+                aria-label={`Delete profile for ${state.currentUser.username}`}
                 title="Delete profile"
               >
                 🗑️
               </button>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       {/* All Users List */}
       {state.users.length > 0 && (
-        <div className="all-users-section">
-          <h3>All Profiles ({state.users.length})</h3>
-          <div className="users-list">
+        <section className="all-users-section" aria-labelledby="all-users-heading">
+          <h3 id="all-users-heading">All Profiles ({state.users.length})</h3>
+          <div className="users-list" role="list" aria-label="List of all user profiles">
             {state.users.map(user => (
-              <div 
+              <article 
                 key={user.id} 
                 className={`user-card ${state.currentUser?.id === user.id ? 'current' : ''}`}
+                role="listitem"
               >
-                <div className="user-info" onClick={() => handleSwitchUser(user)}>
-                  <span className="user-emoji">👤</span>
+                <div 
+                  className="user-info" 
+                  onClick={() => handleSwitchUser(user)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Switch to ${user.username} profile`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleSwitchUser(user);
+                    }
+                  }}
+                >
+                  <span className="user-emoji" role="img" aria-label="User icon">👤</span>
                   <div>
                     <strong>{user.username}</strong>
                     <p>Level {user.progress.currentLevel} • {user.progress.completedLevels.length} completed</p>
                   </div>
                   {state.currentUser?.id === user.id && (
-                    <span className="current-badge">Current</span>
+                    <span className="current-badge" aria-label="Currently selected user">Current</span>
                   )}
                 </div>
-                <div className="user-actions">
+                <div className="user-actions" role="group" aria-label={`Actions for ${user.username}`}>
                   <button 
                     className="reset-button"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleResetProgress(user.id);
                     }}
+                    aria-label={`Reset progress for ${user.username}`}
                     title="Reset progress"
                   >
                     🔄
@@ -157,47 +230,59 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
                       e.stopPropagation();
                       handleDeleteUser(user.id);
                     }}
+                    aria-label={`Delete profile for ${user.username}`}
                     title="Delete profile"
                   >
                     🗑️
                   </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Create New User Section */}
-      <div className="create-user-section">
-        <h3>Create New Profile</h3>
+      <section className="create-user-section" aria-labelledby="create-user-heading">
+        <h3 id="create-user-heading">Create New Profile</h3>
         
         {!isCreating ? (
           <button 
+            ref={!onClose ? firstFocusableRef : undefined}
             className="create-profile-button"
             onClick={() => setIsCreating(true)}
+            aria-label="Start creating a new user profile"
           >
             ➕ Add New Profile
           </button>
         ) : (
-          <form onSubmit={handleCreateUser} className="create-user-form">
+          <form onSubmit={handleCreateUser} className="create-user-form" aria-labelledby="create-user-heading">
             <div className="form-group">
               <label htmlFor="username">Username:</label>
               <input
+                ref={usernameInputRef}
                 id="username"
                 type="text"
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value)}
                 placeholder="Enter username..."
                 maxLength={30}
-                autoFocus
+                aria-describedby="username-requirements"
+                aria-invalid={error ? 'true' : 'false'}
               />
+              <div id="username-requirements" className="input-help">
+                Username must be at least 2 characters long and unique.
+              </div>
             </div>
             
-            {error && <div className="error-message">{error}</div>}
+            {error && (
+              <div className="error-message" role="alert" aria-live="polite">
+                {error}
+              </div>
+            )}
             
             <div className="form-actions">
-              <button type="submit" className="create-button">
+              <button type="submit" className="create-button" aria-label="Create new user profile">
                 Create Profile
               </button>
               <button 
@@ -208,23 +293,24 @@ const UserProfileManager: React.FC<UserProfileManagerProps> = ({ onClose }) => {
                   setNewUsername('');
                   setError('');
                 }}
+                aria-label="Cancel profile creation"
               >
                 Cancel
               </button>
             </div>
           </form>
         )}
-      </div>
+      </section>
 
       {/* Empty State */}
       {state.users.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state-icon">👤</div>
+        <section className="empty-state">
+          <div className="empty-state-icon" role="img" aria-label="User icon">👤</div>
           <h3>No Profiles Yet</h3>
           <p>Create your first profile to start learning English vocabulary!</p>
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 };
 

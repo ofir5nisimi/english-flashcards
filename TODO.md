@@ -105,14 +105,24 @@
 
 ## Phase 7: Polish & Accessibility
 
-- [ ] **Ensure accessibility (semantic HTML, ARIA, keyboard navigation)**  
+- [x] **Ensure accessibility (semantic HTML, ARIA, keyboard navigation)**  
   **Acceptance Criteria:**  
   - App can be fully navigated by keyboard.
   - Appropriate ARIA labels and semantic tags are used.
   - Screen readers can interpret all UI elements.
+  - Semantic HTML structure throughout application.
+  - Focus management for modals and dynamic content.
+  - Screen reader announcements for dynamic content.
+  - Skip navigation links for keyboard users.
+  - Color contrast meets WCAG AA standards.
+  - Form accessibility with proper labels and error states.
 
-- [ ] **Performance optimizations**  
+- [x] **Performance optimizations**  
   **Acceptance Criteria:**  
   - App loads quickly and transitions are smooth on all devices.
+  - Bundle size optimized with code splitting and lazy loading.
+  - Animations use hardware acceleration for smooth performance.
+  - Mobile responsiveness with proper touch targets (44px minimum).
+  - Motion-safe queries respect user accessibility preferences.
 
 

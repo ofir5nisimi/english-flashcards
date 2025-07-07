@@ -24,7 +24,7 @@
 
 .quiz-loading p,
 .quiz-no-words p {
-  color: #7f8c8d;
+  color: #555;
   font-size: 16px;
   margin-bottom: 24px;
 }
@@ -45,7 +45,7 @@
 }
 
 .quiz-info p {
-  color: #7f8c8d;
+  color: #555;
   margin: 0;
   font-size: 16px;
 }
@@ -125,6 +125,8 @@
   gap: 16px;
   max-width: 600px;
   margin: 0 auto;
+  border: none;
+  padding: 0;
 }
 
 .option-button {
@@ -140,6 +142,22 @@
   font-size: 16px;
   text-align: left;
   min-height: 60px;
+  position: relative;
+}
+
+.option-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Focus styles for keyboard navigation */
+.option-radio:focus + .option-letter {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
 }
 
 .option-button:hover {
@@ -285,7 +303,7 @@
 }
 
 .score-display.failed .score-circle {
-  border-color: #e74c3c;
+  border-color: #c62828;
   background: #fdf2f2;
 }
 
@@ -299,7 +317,7 @@
 }
 
 .score-display.failed .score-number {
-  color: #e74c3c;
+  color: #c62828;
 }
 
 .result-status {
@@ -313,7 +331,7 @@
 }
 
 .result-status.failed {
-  color: #e74c3c;
+  color: #c62828;
 }
 
 .results-details {
@@ -333,7 +351,7 @@
 }
 
 .retry-message {
-  color: #e67e22;
+  color: #d84315;
   font-weight: 600;
 }
 

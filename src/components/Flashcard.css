@@ -28,11 +28,13 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  will-change: transform, background-color;
 }
 
 .back-button:hover {
   background: #5a6268;
+  transform: translateY(-1px) translateZ(0);
 }
 
 .close-button {
@@ -48,6 +50,7 @@
 
 .close-button:hover {
   background: #c82333;
+  transform: translateY(-1px) translateZ(0);
 }
 
 .progress-info {
@@ -75,20 +78,34 @@
   perspective: 1000px;
   cursor: pointer;
   margin: 20px 0;
+  will-change: transform;
+  transform: translateZ(0);
+  outline: none;
+}
+
+.flashcard:focus {
+  outline: none;
 }
 
 .flashcard-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
   border-radius: 20px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  will-change: transform;
+  backface-visibility: hidden;
+  outline: none;
+}
+
+.flashcard-inner:focus {
+  outline: none;
 }
 
 .flashcard.flipped .flashcard-inner {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(0);
 }
 
 .flashcard.transitioning {
@@ -97,6 +114,7 @@
 
 .flashcard.transitioning .flashcard-inner {
   transition: none !important;
+  will-change: auto;
 }
 
 .flashcard-front,
@@ -113,6 +131,12 @@
   padding: 30px;
   text-align: center;
   gap: 20px;
+  outline: none;
+}
+
+.flashcard-front:focus,
+.flashcard-back:focus {
+  outline: none;
 }
 
 .flashcard-front {
@@ -164,14 +188,16 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
+  will-change: transform, background-color;
+  transform: translateZ(0);
 }
 
 .replay-button:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
 }
 
 .navigation-controls {
@@ -191,14 +217,15 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 120px;
+  will-change: transform, background;
+  transform: translateZ(0);
 }
 
 .nav-button:hover:not(:disabled) {
   background: linear-gradient(135deg, #2980b9, #1f639a);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  transform: translateY(-2px) translateZ(0);
 }
 
 .nav-button:disabled {
@@ -272,24 +299,24 @@
 }
 
 .quiz-access-button {
-  background: linear-gradient(135deg, #8e44ad, #7d3c98);
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
   border: none;
   padding: 14px 28px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 .quiz-access-button:hover {
-  background: linear-gradient(135deg, #7d3c98, #6c3483);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(142, 68, 173, 0.3);
+  background: linear-gradient(135deg, #218838, #1da88a);
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
 .quiz-unavailable {
@@ -301,6 +328,30 @@
   margin: 8px 0;
   font-size: 14px;
   font-style: italic;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-inner,
+  .back-button,
+  .close-button,
+  .replay-button,
+  .nav-button,
+  .quiz-access-button {
+    transition: none;
+  }
+  
+  .flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .back-button:hover,
+  .close-button:hover,
+  .replay-button:hover,
+  .nav-button:hover:not(:disabled),
+  .quiz-access-button:hover {
+    transform: none;
+  }
 }
 
 /* Responsive design */

@@ -84,8 +84,8 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onQuizSele
   };
 
   return (
-    <div className="level-selector">
-      <div className="selector-header">
+    <main className="level-selector">
+      <header className="selector-header">
         <h2>Choose Your Level</h2>
         <button 
           className="close-button"
@@ -94,103 +94,108 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onQuizSele
         >
           ✕
         </button>
-      </div>
+      </header>
 
-      <div className="selector-description">
+      <section className="selector-description">
         <p>Each level contains new words plus all words from previous levels.</p>
         <p>Study flashcards and take quizzes to unlock new levels!</p>
-      </div>
+      </section>
 
       {availableLevels.length === 0 ? (
-        <div className="empty-state">
+        <section className="empty-state">
           <p>No words available yet!</p>
           <p>Add some words first to create levels.</p>
-        </div>
+        </section>
       ) : (
-        <div className="levels-grid">
-          {availableLevels.map(level => {
-            const levelInfo = getLevelInfo(level);
-            const unlocked = isLevelUnlocked(level);
-            const completed = isLevelCompleted(level);
-            const quizResult = getQuizResult(level);
-            const canQuiz = canTakeQuiz(level);
-            
-            return (
-              <div
-                key={level}
-                className={`level-card ${unlocked ? 'unlocked' : 'locked'} ${completed ? 'completed' : ''}`}
-              >
-                <div className="level-header">
-                  <h3>Level {level}</h3>
-                  <div className="level-badges">
-                    {completed && <span className="completed-badge">✓</span>}
-                    {!unlocked && <span className="locked-badge">🔒</span>}
-                  </div>
-                </div>
-
-                <div className="level-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">New Words:</span>
-                    <span className="stat-value">{levelInfo.newWords}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Total Words:</span>
-                    <span className="stat-value">{levelInfo.totalWords}</span>
-                  </div>
-                </div>
-
-                {quizResult && (
-                  <div className={`quiz-status ${quizResult.passed ? 'passed' : 'failed'}`}>
-                    <div className="quiz-score">
-                      Quiz: {quizResult.score}% {quizResult.passed ? '✓' : '✗'}
+        <section className="levels-section" aria-label="Available learning levels">
+          <div className="levels-grid" role="grid" aria-label="Learning levels with study and quiz options">
+            {availableLevels.map(level => {
+              const levelInfo = getLevelInfo(level);
+              const unlocked = isLevelUnlocked(level);
+              const completed = isLevelCompleted(level);
+              const quizResult = getQuizResult(level);
+              const canQuiz = canTakeQuiz(level);
+              
+              return (
+                <article
+                  key={level}
+                  className={`level-card ${unlocked ? 'unlocked' : 'locked'} ${completed ? 'completed' : ''}`}
+                  role="gridcell"
+                  aria-labelledby={`level-${level}-title`}
+                  aria-describedby={`level-${level}-stats ${quizResult ? `level-${level}-quiz` : ''}`}
+                >
+                  <header className="level-header">
+                    <h3 id={`level-${level}-title`}>Level {level}</h3>
+                    <div className="level-badges" role="status" aria-label={`Level ${level} status`}>
+                      {completed && <span className="completed-badge" aria-label="Completed">✓</span>}
+                      {!unlocked && <span className="locked-badge" aria-label="Locked">🔒</span>}
                     </div>
-                    <div className="quiz-attempts">
-                      Attempts: {quizResult.attempts}
+                  </header>
+
+                  <div className="level-stats" id={`level-${level}-stats`} role="group" aria-label={`Level ${level} statistics`}>
+                    <div className="stat-item">
+                      <span className="stat-label">New Words:</span>
+                      <span className="stat-value">{levelInfo.newWords}</span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-label">Total Words:</span>
+                      <span className="stat-value">{levelInfo.totalWords}</span>
                     </div>
                   </div>
-                )}
 
-                {!unlocked && (
-                  <div className="unlock-requirement">
-                    Complete previous levels to unlock
-                  </div>
-                )}
-
-                {unlocked && (
-                  <div className="level-actions">
-                    <button
-                      className="level-action-button study-button"
-                      onClick={() => handleLevelClick(level)}
-                      aria-label={`Study Level ${level}`}
-                    >
-                      📚 {completed ? 'Study Again' : 'Study'}
-                    </button>
-                    
-                    {canQuiz && (
-                      <button
-                        className={`level-action-button quiz-button ${quizResult?.passed ? 'quiz-passed' : ''}`}
-                        onClick={(e) => handleQuizClick(level, e)}
-                        aria-label={`Take Quiz for Level ${level}`}
-                      >
-                        🧠 {quizResult ? 'Retake Quiz' : 'Take Quiz'}
-                      </button>
-                    )}
-                    
-                    {!canQuiz && levelInfo.totalWords < 4 && (
-                      <div className="quiz-disabled">
-                        Need 4+ words for quiz
+                  {quizResult && (
+                    <div className={`quiz-status ${quizResult.passed ? 'passed' : 'failed'}`} id={`level-${level}-quiz`} role="status">
+                      <div className="quiz-score">
+                        Quiz: {quizResult.score}% {quizResult.passed ? '✓' : '✗'}
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                      <div className="quiz-attempts">
+                        Attempts: {quizResult.attempts}
+                      </div>
+                    </div>
+                  )}
+
+                  {!unlocked && (
+                    <div className="unlock-requirement" role="status" aria-label="Level locked">
+                      Complete previous levels to unlock
+                    </div>
+                  )}
+
+                  {unlocked && (
+                    <div className="level-actions" role="group" aria-label={`Actions for Level ${level}`}>
+                      <button
+                        className="level-action-button study-button"
+                        onClick={() => handleLevelClick(level)}
+                        aria-label={`Study Level ${level} with ${levelInfo.totalWords} words`}
+                      >
+                        📚 {completed ? 'Study Again' : 'Study'}
+                      </button>
+                      
+                      {canQuiz && (
+                        <button
+                          className={`level-action-button quiz-button ${quizResult?.passed ? 'quiz-passed' : ''}`}
+                          onClick={(e) => handleQuizClick(level, e)}
+                          aria-label={`Take quiz for Level ${level} - ${quizResult ? 'Retake previous quiz' : 'Take quiz for the first time'}`}
+                        >
+                          🧠 {quizResult ? 'Retake Quiz' : 'Take Quiz'}
+                        </button>
+                      )}
+                      
+                      {!canQuiz && levelInfo.totalWords < 4 && (
+                        <div className="quiz-disabled" role="status" aria-label="Quiz unavailable">
+                          Need 4+ words for quiz
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
       )}
 
-      <div className="selector-footer">
-        <div className="progress-summary">
+      <footer className="selector-footer">
+        <div className="progress-summary" role="status" aria-label="Overall progress summary">
           <span>Completed Levels: {state.currentUser?.progress.completedLevels.length || 0}</span>
           <span>Current Level: {state.currentUser?.progress.currentLevel || 1}</span>
           <span>Total Quizzes Passed: {
@@ -198,8 +203,8 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({ onLevelSelect, onQuizSele
               .filter(result => result.passed).length
           }</span>
         </div>
-      </div>
-    </div>
+      </footer>
+    </main>
   );
 };
 

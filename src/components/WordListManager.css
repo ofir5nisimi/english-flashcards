@@ -111,25 +111,40 @@
 }
 
 .form-group input {
-  padding: 12px;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e6ed;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .form-group input.error {
   border-color: #e74c3c;
 }
 
+.form-group input[aria-invalid="true"] {
+  border-color: #c62828;
+}
+
+.input-help {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.4;
+}
+
 .error-text {
-  color: #e74c3c;
-  font-size: 0.8rem;
+  display: block;
+  margin-top: 4px;
+  color: #c62828;
+  font-size: 12px;
   font-weight: 500;
 }
 

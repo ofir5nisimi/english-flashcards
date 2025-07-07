@@ -161,8 +161,8 @@ const WordListManager: React.FC<WordListManagerProps> = ({ onClose }) => {
 
       {showAddForm && (
         <div className="word-form-container">
-          <form onSubmit={handleSubmit} className="word-form">
-            <h3>{editingWord ? 'Edit Word' : 'Add New Word'}</h3>
+          <form onSubmit={handleSubmit} className="word-form" aria-labelledby="form-heading">
+            <h3 id="form-heading">{editingWord ? 'Edit Word' : 'Add New Word'}</h3>
             
             <div className="form-row">
               <div className="form-group">
@@ -174,8 +174,19 @@ const WordListManager: React.FC<WordListManagerProps> = ({ onClose }) => {
                   onChange={(e) => handleFormChange('emoji', e.target.value)}
                   placeholder="🍎"
                   className={formErrors.emoji ? 'error' : ''}
+                  required
+                  aria-required="true"
+                  aria-invalid={formErrors.emoji ? 'true' : 'false'}
+                  aria-describedby={formErrors.emoji ? 'emoji-error' : 'emoji-help'}
                 />
-                {formErrors.emoji && <span className="error-text">{formErrors.emoji}</span>}
+                <div id="emoji-help" className="input-help">
+                  Enter a single emoji that represents the word
+                </div>
+                {formErrors.emoji && (
+                  <span id="emoji-error" className="error-text" role="alert" aria-live="polite">
+                    {formErrors.emoji}
+                  </span>
+                )}
               </div>
 
               <div className="form-group">
@@ -187,8 +198,19 @@ const WordListManager: React.FC<WordListManagerProps> = ({ onClose }) => {
                   value={formData.level}
                   onChange={(e) => handleFormChange('level', parseInt(e.target.value) || 1)}
                   className={formErrors.level ? 'error' : ''}
+                  required
+                  aria-required="true"
+                  aria-invalid={formErrors.level ? 'true' : 'false'}
+                  aria-describedby={formErrors.level ? 'level-error' : 'level-help'}
                 />
-                {formErrors.level && <span className="error-text">{formErrors.level}</span>}
+                <div id="level-help" className="input-help">
+                  Level 1-10, words in higher levels include all previous level words
+                </div>
+                {formErrors.level && (
+                  <span id="level-error" className="error-text" role="alert" aria-live="polite">
+                    {formErrors.level}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -201,8 +223,19 @@ const WordListManager: React.FC<WordListManagerProps> = ({ onClose }) => {
                 onChange={(e) => handleFormChange('english', e.target.value)}
                 placeholder="Apple"
                 className={formErrors.english ? 'error' : ''}
+                required
+                aria-required="true"
+                aria-invalid={formErrors.english ? 'true' : 'false'}
+                aria-describedby={formErrors.english ? 'english-error' : 'english-help'}
               />
-              {formErrors.english && <span className="error-text">{formErrors.english}</span>}
+              <div id="english-help" className="input-help">
+                Enter the English word that corresponds to the emoji
+              </div>
+              {formErrors.english && (
+                <span id="english-error" className="error-text" role="alert" aria-live="polite">
+                  {formErrors.english}
+                </span>
+              )}
             </div>
 
             <div className="form-group">
@@ -214,18 +247,32 @@ const WordListManager: React.FC<WordListManagerProps> = ({ onClose }) => {
                 onChange={(e) => handleFormChange('hebrew', e.target.value)}
                 placeholder="תפוח"
                 className={formErrors.hebrew ? 'error' : ''}
+                required
+                aria-required="true"
+                aria-invalid={formErrors.hebrew ? 'true' : 'false'}
+                aria-describedby={formErrors.hebrew ? 'hebrew-error' : 'hebrew-help'}
+                lang="he"
+                dir="rtl"
               />
-              {formErrors.hebrew && <span className="error-text">{formErrors.hebrew}</span>}
+              <div id="hebrew-help" className="input-help">
+                Enter the Hebrew translation of the English word
+              </div>
+              {formErrors.hebrew && (
+                <span id="hebrew-error" className="error-text" role="alert" aria-live="polite">
+                  {formErrors.hebrew}
+                </span>
+              )}
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="submit-button">
+              <button type="submit" className="submit-button" aria-label={editingWord ? 'Update existing word' : 'Add new word to vocabulary'}>
                 {editingWord ? 'Update Word' : 'Add Word'}
               </button>
               <button 
                 type="button" 
                 className="cancel-button"
                 onClick={resetForm}
+                aria-label="Cancel and close form"
               >
                 Cancel
               </button>

@@ -13,6 +13,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   color: #333;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f8f9fa;
 }
 
 /* Main app container */
@@ -63,7 +69,7 @@ body {
 .welcome-section > p {
   font-size: 1.1rem;
   margin-bottom: 3rem;
-  color: #666;
+  color: #555;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -81,12 +87,16 @@ body {
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hardware acceleration */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) translateZ(0);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
@@ -103,7 +113,7 @@ body {
 }
 
 .feature-card p {
-  color: #666;
+  color: #555;
   line-height: 1.5;
 }
 
@@ -123,9 +133,12 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: inline-block;
+  /* Hardware acceleration */
+  will-change: transform, background, box-shadow;
+  transform: translateZ(0);
 }
 
 .primary-button {
@@ -134,7 +147,7 @@ body {
 }
 
 .primary-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
@@ -147,6 +160,7 @@ body {
 .secondary-button:hover {
   background: #667eea;
   color: white;
+  transform: translateY(-1px) translateZ(0);
 }
 
 /* Footer */
@@ -154,7 +168,7 @@ body {
   background: #f8f9fa;
   padding: 1rem;
   text-align: center;
-  color: #666;
+  color: #555;
   border-top: 1px solid #eee;
 }
 
@@ -184,7 +198,7 @@ body {
 }
 
 .user-progress {
-  color: #666;
+  color: #555;
   font-size: 14px;
   background: #e8f5e8;
   padding: 4px 8px;
@@ -200,19 +214,23 @@ body {
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hardware acceleration */
+  will-change: transform, background;
+  transform: translateZ(0);
 }
 
 .manage-profiles-button:hover,
 .select-user-button:hover {
   background: #45a049;
+  transform: translateY(-1px) translateZ(0);
 }
 
 .no-user-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #666;
+  color: #555;
 }
 
 /* Feature Status Indicators */
@@ -227,12 +245,12 @@ body {
 }
 
 .status-inactive {
-  color: #f44336;
+  color: #d32f2f;
   font-weight: 600;
 }
 
 .status-coming-soon {
-  color: #ff9800;
+  color: #e65100;
   font-weight: 600;
 }
 
@@ -264,7 +282,7 @@ body {
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -272,15 +290,18 @@ body {
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
   min-width: 160px;
   justify-content: center;
+  /* Hardware acceleration */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 .management-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .management-button:active {
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
 }
 
 /* User Progress Stats */
@@ -305,14 +326,19 @@ body {
 
 .stat-card {
   background: white;
-  padding: 24px 16px;
+  padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hardware acceleration */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) translateZ(0);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .stat-number {
@@ -387,7 +413,7 @@ body {
   }
   
   .welcome-section h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
   
   .features-grid {
@@ -401,32 +427,40 @@ body {
   
   .action-buttons {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+    align-items: stretch;
   }
   
   .primary-button,
   .secondary-button {
     width: 100%;
-    max-width: 300px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    /* Ensure minimum touch target size */
+    min-height: 44px;
   }
   
   .management-buttons {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+    align-items: stretch;
   }
   
   .management-button {
     width: 100%;
-    max-width: 250px;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    /* Ensure minimum touch target size */
+    min-height: 44px;
   }
   
   .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
   
   .stat-card {
-    padding: 20px 16px;
+    padding: 1rem;
   }
   
   .stat-number {
@@ -434,36 +468,46 @@ body {
   }
   
   .user-status-bar {
-    padding: 12px 16px;
+    padding: 1rem;
   }
   
   .current-user-info {
     flex-direction: column;
+    gap: 0.75rem;
     align-items: flex-start;
-    gap: 8px;
   }
   
   .user-greeting {
-    font-size: 14px;
+    font-size: 1rem;
   }
   
   .user-progress {
-    font-size: 12px;
+    font-size: 0.875rem;
+    align-self: stretch;
+    text-align: center;
   }
   
   .debug-actions {
-    margin-top: 24px;
-    padding: 16px;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  /* Improve button touch targets */
+  .manage-profiles-button,
+  .select-user-button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    min-height: 44px;
   }
 }
 
 @media (max-width: 480px) {
   .app-header {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
   }
   
   .app-main {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
   }
   
   .feature-emoji {
@@ -471,7 +515,7 @@ body {
   }
   
   .feature-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .management-section h3 {
@@ -483,6 +527,232 @@ body {
   }
   
   .stat-number {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Stack stats vertically on very small screens */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  /* Improved spacing for very small screens */
+  .welcome-section {
+    padding: 1rem 0;
+  }
+  
+  .welcome-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-section > p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .features-grid {
+    gap: 1rem;
+  }
+  
+  .feature-card {
+    padding: 1rem;
+  }
+  
+  /* Enhance loading fallback for mobile */
+  .loading-fallback {
+    padding: 2rem 1rem;
+  }
+  
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 360px) {
+  .app-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .welcome-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .primary-button,
+  .secondary-button,
+  .management-button {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .feature-card {
+    padding: 0.875rem;
+  }
+  
+  .stat-card {
+    padding: 0.75rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app-header {
+    padding: 0.5rem;
+  }
+  
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .app-header p {
+    font-size: 0.875rem;
+  }
+  
+  .welcome-section {
+    padding: 0.5rem 0;
+  }
+  
+  .welcome-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .feature-card {
+    padding: 1rem;
+  }
+}
+
+/* Global focus styles for accessibility */
+*:focus:not(.flashcard):not(.flashcard-inner):not(.flashcard-front):not(.flashcard-back) {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline for elements that will have custom focus styles */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+.flashcard:focus,
+.flashcard-inner:focus,
+.flashcard-front:focus,
+.flashcard-back:focus {
+  outline: none;
+}
+
+/* Custom focus styles for buttons */
+button:focus {
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+  border-color: #3498db;
+}
+
+/* Custom focus styles for inputs */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Focus styles for interactive divs and elements with tabindex */
+[tabindex]:focus:not(.flashcard) {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Ensure focus is visible for elements with role="button" */
+[role="button"]:focus:not(.flashcard) {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #3498db;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Loading fallback for lazy-loaded components */
+.loading-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+  /* Hardware acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-fallback p {
+  color: #555;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .primary-button,
+  .secondary-button,
+  .management-button,
+  .manage-profiles-button,
+  .select-user-button,
+  .feature-card,
+  .stat-card {
+    transition: none;
+  }
+  
+  .primary-button:hover,
+  .secondary-button:hover,
+  .management-button:hover,
+  .management-button:active,
+  .manage-profiles-button:hover,
+  .select-user-button:hover,
+  .feature-card:hover,
+  .stat-card:hover {
+    transform: none;
+  }
+  
+  .loading-spinner {
+    animation: none;
   }
 } 

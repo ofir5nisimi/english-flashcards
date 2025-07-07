@@ -1,14 +1,24 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useAppContext } from './context/AppContext'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { loadDefaultWords } from './utils/defaultWords'
-import UserProfileManager from './components/UserProfileManager'
-import WordListManager from './components/WordListManager'
-import LevelSelector from './components/LevelSelector'
-import Flashcard from './components/Flashcard'
-import Quiz from './components/Quiz'
-import ExportImport from './components/ExportImport'
 import './App.css'
+
+// Lazy load components that are not immediately needed
+const UserProfileManager = React.lazy(() => import('./components/UserProfileManager'))
+const WordListManager = React.lazy(() => import('./components/WordListManager'))
+const LevelSelector = React.lazy(() => import('./components/LevelSelector'))
+const Flashcard = React.lazy(() => import('./components/Flashcard'))
+const Quiz = React.lazy(() => import('./components/Quiz'))
+const ExportImport = React.lazy(() => import('./components/ExportImport'))
+
+// Loading component for suspense
+const LoadingFallback = () => (
+  <div className="loading-fallback">
+    <div className="loading-spinner"></div>
+    <p>Loading...</p>
+  </div>
+)
 
 function App() {
   const { state, dispatch } = useAppContext()
@@ -134,13 +144,17 @@ function App() {
   if (showProfileManager) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Learn English vocabulary through emoji-based flashcards</p>
         </header>
         
-        <main className="app-main">
-          <UserProfileManager onClose={handleCloseProfileManager} />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <UserProfileManager onClose={handleCloseProfileManager} />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -154,13 +168,17 @@ function App() {
   if (showWordManager) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Manage your vocabulary words and levels</p>
         </header>
         
-        <main className="app-main">
-          <WordListManager onClose={handleCloseWordManager} />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <WordListManager onClose={handleCloseWordManager} />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -174,13 +192,17 @@ function App() {
   if (showExportImport) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Export and import your data for backup and transfer</p>
         </header>
         
-        <main className="app-main">
-          <ExportImport onClose={handleCloseExportImport} />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <ExportImport onClose={handleCloseExportImport} />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -194,17 +216,21 @@ function App() {
   if (showLevelSelector) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Choose your learning level</p>
         </header>
         
-        <main className="app-main">
-          <LevelSelector 
-            onLevelSelect={handleLevelSelect} 
-            onQuizSelect={handleQuizSelect}
-            onClose={handleCloseLevelSelector} 
-          />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <LevelSelector 
+              onLevelSelect={handleLevelSelect} 
+              onQuizSelect={handleQuizSelect}
+              onClose={handleCloseLevelSelector} 
+            />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -218,17 +244,21 @@ function App() {
   if (showQuizMode) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Level {selectedLevel} - Quiz Mode</p>
         </header>
         
-        <main className="app-main">
-          <Quiz 
-            level={selectedLevel} 
-            onComplete={handleQuizComplete}
-            onBack={handleBackToLevelsFromQuiz}
-          />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <Quiz 
+              level={selectedLevel} 
+              onComplete={handleQuizComplete}
+              onBack={handleBackToLevelsFromQuiz}
+            />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -242,18 +272,22 @@ function App() {
   if (showLearningMode) {
     return (
       <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <header className="app-header">
           <h1>English Flashcards</h1>
           <p>Level {selectedLevel} - Learning Mode</p>
         </header>
         
-        <main className="app-main">
-          <Flashcard 
-            level={selectedLevel} 
-            onBack={handleBackToLevels}
-            onClose={handleCloseLearningMode}
-            onQuizSelect={handleQuizSelect}
-          />
+        <main className="app-main" id="main-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <Flashcard 
+              level={selectedLevel} 
+              onBack={handleBackToLevels}
+              onClose={handleCloseLearningMode}
+              onQuizSelect={handleQuizSelect}
+            />
+          </Suspense>
         </main>
         
         <footer className="app-footer">
@@ -266,13 +300,15 @@ function App() {
   // Main homepage
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+      
       <header className="app-header">
         <h1>English Flashcards</h1>
         <p>Learn English vocabulary through emoji-based flashcards</p>
       </header>
       
-      <main className="app-main">
-        <div className="welcome-section">
+      <main className="app-main" id="main-content">
+        <section className="welcome-section">
           <h2>Welcome{state.currentUser ? `, ${state.currentUser.username}` : ''}!</h2>
           <p>Start your English learning journey with interactive flashcards.</p>
           
@@ -280,6 +316,7 @@ function App() {
             <button 
               className="primary-button"
               onClick={handleGetStarted}
+              aria-label={state.currentUser ? 'Continue learning with existing profile' : 'Get started with English flashcards'}
             >
               {state.currentUser ? '📚 Continue Learning' : '🚀 Get Started'}
             </button>
@@ -288,18 +325,20 @@ function App() {
               <button 
                 className="secondary-button"
                 onClick={handleContinueLearning}
+                aria-label="Choose a learning level"
               >
                 📊 Choose Level
               </button>
             )}
           </div>
 
-          <div className="management-section">
+          <section className="management-section">
             <h3>Management</h3>
             <div className="management-buttons">
               <button 
                 className="management-button"
                 onClick={handleManageProfiles}
+                aria-label="Manage user profiles"
               >
                 👤 Manage Profiles
               </button>
@@ -307,6 +346,7 @@ function App() {
               <button 
                 className="management-button"
                 onClick={handleManageWords}
+                aria-label="Manage vocabulary words and levels"
               >
                 📝 Manage Words
               </button>
@@ -314,34 +354,35 @@ function App() {
               <button 
                 className="management-button"
                 onClick={handleManageExportImport}
+                aria-label="Export or import data for backup and transfer"
               >
                 💾 Export / Import
               </button>
             </div>
-          </div>
+          </section>
 
           {state.currentUser && (
-            <div className="user-stats">
+            <section className="user-stats">
               <h3>Your Progress</h3>
-              <div className="stats-grid">
-                <div className="stat-card">
+              <div className="stats-grid" role="grid" aria-label="User progress statistics">
+                <div className="stat-card" role="gridcell">
                   <span className="stat-number">{state.currentUser.progress.completedLevels.length}</span>
                   <span className="stat-label">Completed Levels</span>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" role="gridcell">
                   <span className="stat-number">{state.currentUser.progress.currentLevel}</span>
                   <span className="stat-label">Current Level</span>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" role="gridcell">
                   <span className="stat-number">{state.words.length}</span>
                   <span className="stat-label">Total Words</span>
                 </div>
               </div>
-            </div>
+            </section>
           )}
-        </div>
+        </section>
 
-        <div className="debug-section">
+        <aside className="debug-section">
           <div className="debug-actions">
             <h3>Development Actions</h3>
             <button 
@@ -351,15 +392,16 @@ function App() {
                   clearAllData()
                 }
               }}
+              aria-label="Clear all application data - warning: this action cannot be undone"
             >
               🗑️ Clear All Data
             </button>
-            <div className="debug-info">
+            <div className="debug-info" role="status" aria-label="Application statistics">
               <p>Users: {state.users.length} | Words: {state.words.length}</p>
               <p>Current User: {state.currentUser?.username || 'None'}</p>
             </div>
           </div>
-        </div>
+        </aside>
       </main>
       
       <footer className="app-footer">
