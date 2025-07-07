@@ -91,11 +91,11 @@
 
 ## Phase 6: Export / Import
 
-- [ ] **Implement export of all data as JSON file**  
+- [x] **Implement export of all data as JSON file**  
   **Acceptance Criteria:**  
   - User can download a file containing all profiles, progress, and word lists.
 
-- [ ] **Implement import of data from JSON file**  
+- [x] **Implement import of data from JSON file**  
   **Acceptance Criteria:**  
   - User can select a file to import.
   - User can choose to merge or replace existing data.

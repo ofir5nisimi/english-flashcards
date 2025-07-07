@@ -7,6 +7,7 @@ import WordListManager from './components/WordListManager'
 import LevelSelector from './components/LevelSelector'
 import Flashcard from './components/Flashcard'
 import Quiz from './components/Quiz'
+import ExportImport from './components/ExportImport'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   const [showLevelSelector, setShowLevelSelector] = useState(false)
   const [showLearningMode, setShowLearningMode] = useState(false)
   const [showQuizMode, setShowQuizMode] = useState(false)
+  const [showExportImport, setShowExportImport] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
 
   // Load default words if no words exist
@@ -53,12 +55,20 @@ function App() {
     setShowWordManager(true)
   }
 
+  const handleManageExportImport = () => {
+    setShowExportImport(true)
+  }
+
   const handleCloseProfileManager = () => {
     setShowProfileManager(false)
   }
 
   const handleCloseWordManager = () => {
     setShowWordManager(false)
+  }
+
+  const handleCloseExportImport = () => {
+    setShowExportImport(false)
   }
 
   const handleCloseLevelSelector = () => {
@@ -151,6 +161,26 @@ function App() {
         
         <main className="app-main">
           <WordListManager onClose={handleCloseWordManager} />
+        </main>
+        
+        <footer className="app-footer">
+          <p>© 2024 English Flashcards - Learn English with Fun!</p>
+        </footer>
+      </div>
+    )
+  }
+
+  // Show export/import manager
+  if (showExportImport) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>English Flashcards</h1>
+          <p>Export and import your data for backup and transfer</p>
+        </header>
+        
+        <main className="app-main">
+          <ExportImport onClose={handleCloseExportImport} />
         </main>
         
         <footer className="app-footer">
@@ -279,6 +309,13 @@ function App() {
                 onClick={handleManageWords}
               >
                 📝 Manage Words
+              </button>
+
+              <button 
+                className="management-button"
+                onClick={handleManageExportImport}
+              >
+                💾 Export / Import
               </button>
             </div>
           </div>
