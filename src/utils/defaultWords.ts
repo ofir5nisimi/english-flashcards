@@ -59,7 +59,19 @@ export const defaultWords: Word[] = [
   { id: 'default-47', emoji: '❄️', english: 'Snow', hebrew: 'שלג', level: 5 },
   { id: 'default-48', emoji: '🌪️', english: 'Wind', hebrew: 'רוח', level: 5 },
   { id: 'default-49', emoji: '⚡', english: 'Lightning', hebrew: 'ברק', level: 5 },
-  { id: 'default-50', emoji: '🌈', english: 'Rainbow', hebrew: 'קשת בענן', level: 5 }
+  { id: 'default-50', emoji: '🌈', english: 'Rainbow', hebrew: 'קשת בענן', level: 5 },
+
+  // Level 6 - Animals (10 words)
+  { id: 'default-51', emoji: '🐦', english: 'Bird', hebrew: 'ציפור', level: 6 },
+  { id: 'default-52', emoji: '🐴', english: 'Horse', hebrew: 'סוס', level: 6 },
+  { id: 'default-53', emoji: '🐄', english: 'Cow', hebrew: 'פרה', level: 6 },
+  { id: 'default-54', emoji: '🐷', english: 'Pig', hebrew: 'חזיר', level: 6 },
+  { id: 'default-55', emoji: '🐑', english: 'Sheep', hebrew: 'כבש', level: 6 },
+  { id: 'default-56', emoji: '🦆', english: 'Duck', hebrew: 'ברווז', level: 6 },
+  { id: 'default-57', emoji: '🐔', english: 'Chicken', hebrew: 'תרנגולת', level: 6 },
+  { id: 'default-58', emoji: '🐘', english: 'Elephant', hebrew: 'פיל', level: 6 },
+  { id: 'default-59', emoji: '🦁', english: 'Lion', hebrew: 'אריה', level: 6 },
+  { id: 'default-60', emoji: '🐵', english: 'Monkey', hebrew: 'קוף', level: 6 }
 ];
 
 export const loadDefaultWords = (): Word[] => {
