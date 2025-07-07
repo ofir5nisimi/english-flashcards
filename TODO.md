@@ -55,13 +55,13 @@
 
 ## Phase 4: Word List & Level Management
 
-- [ ] **Implement word list management UI**  
+- [x] **Implement word list management UI**  
   **Acceptance Criteria:**  
   - User can add, edit, or delete words (emoji, English, Hebrew).
   - User can assign words to levels.
   - Unlimited words can be managed.
 
-- [ ] **Implement level structure logic**  
+- [x] **Implement level structure logic**  
   **Acceptance Criteria:**  
   - Each level contains 10 words.
   - Higher levels include all lower level words plus 10 new words.

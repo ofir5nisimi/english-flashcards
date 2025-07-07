@@ -1,0 +1,265 @@
+.level-selector {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.selector-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
+.close-button {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background: #c0392b;
+}
+
+.selector-description {
+  text-align: center;
+  margin-bottom: 32px;
+  color: #7f8c8d;
+}
+
+.selector-description p {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.level-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.level-card.unlocked {
+  border-color: #3498db;
+  cursor: pointer;
+}
+
+.level-card.unlocked:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+  border-color: #2980b9;
+}
+
+.level-card.completed {
+  border-color: #27ae60;
+  background: linear-gradient(135deg, #f8fffe 0%, #f1f9f6 100%);
+}
+
+.level-card.completed:hover {
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.2);
+  border-color: #219a52;
+}
+
+.level-card.locked {
+  border-color: #bdc3c7;
+  background: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.level-card:focus {
+  outline: none;
+  ring: 2px solid #3498db;
+  ring-offset: 2px;
+}
+
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.level-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.4rem;
+}
+
+.completed-badge {
+  background: #27ae60;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.locked-badge {
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.level-stats {
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #2c3e50;
+  font-weight: 600;
+  background: #ecf0f1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.unlock-requirement {
+  text-align: center;
+  color: #95a5a6;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 12px;
+}
+
+.level-action {
+  text-align: center;
+  background: #3498db;
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.level-card.unlocked .level-action:hover {
+  background: #2980b9;
+}
+
+.level-card.completed .level-action {
+  background: #27ae60;
+}
+
+.level-card.completed .level-action:hover {
+  background: #219a52;
+}
+
+.selector-footer {
+  border-top: 2px solid #f0f0f0;
+  padding-top: 20px;
+}
+
+.progress-summary {
+  display: flex;
+  justify-content: space-around;
+  color: #7f8c8d;
+  font-weight: 500;
+  text-align: center;
+}
+
+.progress-summary span {
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .level-selector {
+    padding: 16px;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .selector-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .levels-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .level-card {
+    padding: 16px;
+  }
+
+  .progress-summary {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .selector-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .level-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .selector-description {
+    margin-bottom: 24px;
+  }
+
+  .selector-description p {
+    font-size: 0.9rem;
+  }
+} 

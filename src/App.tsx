@@ -1,22 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAppContext } from './context/AppContext'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { loadDefaultWords } from './utils/defaultWords'
 import UserProfileManager from './components/UserProfileManager'
+import WordListManager from './components/WordListManager'
+import LevelSelector from './components/LevelSelector'
 import Flashcard from './components/Flashcard'
 import './App.css'
 
 function App() {
-  const { state } = useAppContext()
+  const { state, dispatch } = useAppContext()
   const { clearAllData } = useLocalStorage()
   const [showProfileManager, setShowProfileManager] = useState(false)
+  const [showWordManager, setShowWordManager] = useState(false)
+  const [showLevelSelector, setShowLevelSelector] = useState(false)
   const [showLearningMode, setShowLearningMode] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<number>(1)
+
+  // Load default words if no words exist
+  useEffect(() => {
+    if (state.words.length === 0) {
+      const defaultWords = loadDefaultWords();
+      dispatch({ type: 'SET_WORDS', payload: defaultWords });
+    }
+  }, [state.words.length, dispatch]);
 
   const handleGetStarted = () => {
     if (state.currentUser) {
-      // User is already logged in, show flashcard learning
-      setShowLearningMode(true)
+      // User is already logged in, show level selector
+      setShowLevelSelector(true)
     } else {
       // No user selected, show profile manager
+      setShowProfileManager(true)
+    }
+  }
+
+  const handleContinueLearning = () => {
+    if (state.currentUser) {
+      setShowLevelSelector(true)
+    } else {
       setShowProfileManager(true)
     }
   }
@@ -25,14 +47,49 @@ function App() {
     setShowProfileManager(true)
   }
 
+  const handleManageWords = () => {
+    setShowWordManager(true)
+  }
+
   const handleCloseProfileManager = () => {
     setShowProfileManager(false)
+  }
+
+  const handleCloseWordManager = () => {
+    setShowWordManager(false)
+  }
+
+  const handleCloseLevelSelector = () => {
+    setShowLevelSelector(false)
+  }
+
+  const handleLevelSelect = (level: number) => {
+    setSelectedLevel(level)
+    setShowLevelSelector(false)
+    setShowLearningMode(true)
+    // Update current level in user progress
+    if (state.currentUser) {
+      const newProgress = {
+        ...state.currentUser.progress,
+        currentLevel: level
+      }
+      dispatch({
+        type: 'UPDATE_USER_PROGRESS',
+        payload: { userId: state.currentUser.id, progress: newProgress }
+      })
+    }
   }
 
   const handleCloseLearningMode = () => {
     setShowLearningMode(false)
   }
 
+  const handleBackToLevels = () => {
+    setShowLearningMode(false)
+    setShowLevelSelector(true)
+  }
+
+  // Show profile manager
   if (showProfileManager) {
     return (
       <div className="app">
@@ -52,22 +109,17 @@ function App() {
     )
   }
 
-  if (showLearningMode) {
+  // Show word manager
+  if (showWordManager) {
     return (
       <div className="app">
         <header className="app-header">
           <h1>English Flashcards</h1>
-          <p>Learning Session - {state.currentUser?.username}</p>
-          <button 
-            className="back-button"
-            onClick={handleCloseLearningMode}
-          >
-            ← Back to Dashboard
-          </button>
+          <p>Manage your vocabulary words and levels</p>
         </header>
         
         <main className="app-main">
-          <Flashcard emoji="🍎" hebrew="תפוח" english="Apple" />
+          <WordListManager onClose={handleCloseWordManager} />
         </main>
         
         <footer className="app-footer">
@@ -77,118 +129,122 @@ function App() {
     )
   }
 
+  // Show level selector
+  if (showLevelSelector) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>English Flashcards</h1>
+          <p>Choose your learning level</p>
+        </header>
+        
+        <main className="app-main">
+          <LevelSelector onLevelSelect={handleLevelSelect} onClose={handleCloseLevelSelector} />
+        </main>
+        
+        <footer className="app-footer">
+          <p>© 2024 English Flashcards - Learn English with Fun!</p>
+        </footer>
+      </div>
+    )
+  }
+
+  // Show learning mode (flashcards)
+  if (showLearningMode) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>English Flashcards</h1>
+          <p>Level {selectedLevel} - Learning Mode</p>
+        </header>
+        
+        <main className="app-main">
+          <Flashcard 
+            level={selectedLevel} 
+            onBack={handleBackToLevels}
+            onClose={handleCloseLearningMode} 
+          />
+        </main>
+        
+        <footer className="app-footer">
+          <p>© 2024 English Flashcards - Learn English with Fun!</p>
+        </footer>
+      </div>
+    )
+  }
+
+  // Main homepage
   return (
     <div className="app">
       <header className="app-header">
         <h1>English Flashcards</h1>
         <p>Learn English vocabulary through emoji-based flashcards</p>
-        
-        {/* User Status Bar */}
-        <div className="user-status-bar">
-          {state.currentUser ? (
-            <div className="current-user-info">
-              <span className="user-greeting">
-                👋 Welcome back, <strong>{state.currentUser.username}</strong>!
-              </span>
-              <span className="user-progress">
-                Level {state.currentUser.progress.currentLevel} • {state.currentUser.progress.completedLevels.length} completed
-              </span>
-              <button 
-                className="manage-profiles-button"
-                onClick={handleManageProfiles}
-                title="Manage Profiles"
-              >
-                👤 Manage Profiles
-              </button>
-            </div>
-          ) : (
-            <div className="no-user-info">
-              <span>No user selected</span>
-              <button 
-                className="select-user-button"
-                onClick={handleManageProfiles}
-              >
-                👤 Select User
-              </button>
-            </div>
-          )}
-        </div>
       </header>
       
       <main className="app-main">
         <div className="welcome-section">
-          <h2>Welcome to English Flashcards! 🎯</h2>
-          <p>
-            Master English vocabulary with our interactive flashcard system. 
-            Each card features an emoji, Hebrew translation, and pronunciation to help you learn effectively.
-          </p>
-          
-          <div className="features-grid">
-            <div className="feature-card">
-              <span className="feature-emoji">👤</span>
-              <h3>User Profiles</h3>
-              <p>Create and manage multiple local profiles</p>
-              <div className="feature-status">
-                {state.users.length > 0 ? (
-                  <span className="status-active">✅ {state.users.length} profile(s) created</span>
-                ) : (
-                  <span className="status-inactive">➕ Create your first profile</span>
-                )}
-              </div>
-            </div>
-            
-            <div className="feature-card">
-              <span className="feature-emoji">🃏</span>
-              <h3>Interactive Cards</h3>
-              <p>Flip cards to reveal English words with pronunciation</p>
-              <div className="feature-status">
-                {state.currentUser ? (
-                  <span className="status-active">✅ Ready to learn</span>
-                ) : (
-                  <span className="status-inactive">❌ Select a user first</span>
-                )}
-              </div>
-            </div>
-            
-            <div className="feature-card">
-              <span className="feature-emoji">📊</span>
-              <h3>Progress Tracking</h3>
-              <p>Track your learning progress through levels</p>
-              <div className="feature-status">
-                {state.currentUser ? (
-                  <span className="status-active">✅ Tracking enabled</span>
-                ) : (
-                  <span className="status-inactive">❌ Select a user first</span>
-                )}
-              </div>
-            </div>
-            
-            <div className="feature-card">
-              <span className="feature-emoji">🎯</span>
-              <h3>Quizzes</h3>
-              <p>Test your knowledge with multiple-choice quizzes</p>
-              <div className="feature-status">
-                <span className="status-coming-soon">🚧 Coming Soon</span>
-              </div>
-            </div>
-          </div>
+          <h2>Welcome{state.currentUser ? `, ${state.currentUser.username}` : ''}!</h2>
+          <p>Start your English learning journey with interactive flashcards.</p>
           
           <div className="action-buttons">
             <button 
               className="primary-button"
               onClick={handleGetStarted}
             >
-              {state.currentUser ? 'Continue Learning' : 'Get Started'}
+              {state.currentUser ? '📚 Continue Learning' : '🚀 Get Started'}
             </button>
-            <button 
-              className="secondary-button"
-              onClick={handleManageProfiles}
-            >
-              👤 Manage Profiles
-            </button>
+            
+            {state.currentUser && (
+              <button 
+                className="secondary-button"
+                onClick={handleContinueLearning}
+              >
+                📊 Choose Level
+              </button>
+            )}
           </div>
 
-          {/* Debug/Development Actions */}
+          <div className="management-section">
+            <h3>Management</h3>
+            <div className="management-buttons">
+              <button 
+                className="management-button"
+                onClick={handleManageProfiles}
+              >
+                👤 Manage Profiles
+              </button>
+              
+              <button 
+                className="management-button"
+                onClick={handleManageWords}
+              >
+                📝 Manage Words
+              </button>
+            </div>
+          </div>
+
+          {state.currentUser && (
+            <div className="user-stats">
+              <h3>Your Progress</h3>
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <span className="stat-number">{state.currentUser.progress.completedLevels.length}</span>
+                  <span className="stat-label">Completed Levels</span>
+                </div>
+                <div className="stat-card">
+                  <span className="stat-number">{state.currentUser.progress.currentLevel}</span>
+                  <span className="stat-label">Current Level</span>
+                </div>
+                <div className="stat-card">
+                  <span className="stat-number">{state.words.length}</span>
+                  <span className="stat-label">Total Words</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="debug-section">
           <div className="debug-actions">
             <h3>Development Actions</h3>
             <button 
