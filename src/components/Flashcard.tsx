@@ -88,7 +88,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
 
   const currentWord = levelWords[currentWordIndex]
 
-  const handleCardClick = () => {
+  const flipCard = () => {
     if (!isFlipped) {
       setIsFlipped(true)
       announce(`Card flipped. English word: ${currentWord.english}`)
@@ -104,6 +104,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
       setHasPlayedAudio(false)
       announce(`Card flipped back. Showing emoji: ${currentWord.emoji} and Hebrew: ${currentWord.hebrew}`)
     }
+  }
+
+  const handleCardClick = () => {
+    flipCard()
   }
 
   const speakWord = (): Promise<boolean> => {
@@ -265,7 +269,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              handleCardClick()
+              flipCard()
             }
           }}
           ref={flashcardRef}
@@ -280,22 +284,25 @@ const Flashcard: React.FC<FlashcardProps> = ({ level, onBack, onClose, onQuizSel
             <div className="flashcard-back">
               <div className="flashcard-emoji" role="img" aria-label={`Emoji: ${currentWord.emoji}`}>{currentWord.emoji}</div>
               <div className="flashcard-english" lang="en">{currentWord.english}</div>
-              <div className="audio-controls">
-                <button 
-                  className="replay-button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    speakWordWithRetry()
-                  }}
-                  aria-label={`Replay pronunciation of ${currentWord.english}`}
-                >
-                  🔊 Play Again
-                </button>
-              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Audio Controls - Show only when card is flipped */}
+      {isFlipped && (
+        <section className="audio-section">
+          <button 
+            className="standalone-replay-button"
+            onClick={() => {
+              speakWordWithRetry()
+            }}
+            aria-label={`Replay pronunciation of ${currentWord.english}`}
+          >
+            🔊 Play Again
+          </button>
+        </section>
+      )}
 
       <nav className="navigation-controls" aria-label="Flashcard navigation">
         <button 
